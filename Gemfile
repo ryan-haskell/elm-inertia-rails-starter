@@ -20,6 +20,9 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 # Inertia Rails adapter
 gem 'inertia_rails', "~> 3.1.4"
 
+# Vite support for rails
+gem 'vite_rails'
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
