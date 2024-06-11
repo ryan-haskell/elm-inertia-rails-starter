@@ -1,24 +1,35 @@
-# README
+# elm-inertia-rails-starter
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A starter template for using [Elm](https://elm-lang.org) with a [Rails](https://rubyonrails.org) backend (powered by [Inertia.js](https://inertiajs.com)).
 
-Things you may want to cover:
+## Local development
 
-* Ruby version
+### Required software
 
-* System dependencies
+Name | How to check
+--- | ---
+[Ruby v3.3.2+](https://www.ruby-lang.org) | `ruby -v`
+[Rails v7.1.3+](https://rubyonrails.org) | `rails -v`
+[sqlite v3.43.2+](https://sqlite.org) | `sqlite -v`
+[Node.js v20.14.0+](https://nodejs.org) | `node -v`
 
-* Configuration
+### Running the web server
 
-* Database creation
+```sh
+bin/rails server
+```
 
-* Database initialization
+## Setup steps
 
-* How to run the test suite
+If you'd rather set things up manually, here were all the terminal commands I ran to set up this template:
 
-* Services (job queues, cache servers, search engines, etc.)
+```sh
+# Create a new minimal Rails app
+rails new elm-inertia-rails-starter --minimal
 
-* Deployment instructions
+# Enter the new project folder
+cd elm-inertia-rails-starter
 
-* ...
+# Ran the Rails server (in another tab)
+bin/rails server
+```
