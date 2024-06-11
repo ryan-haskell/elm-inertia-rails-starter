@@ -88,6 +88,6 @@ npx elm-inertia init
 # Add an Elm page to handle the "Articles#index" action
 npx elm-inertia add Articles/Index
 
-# Run the Rails server (in another tab)
-rails server
+# Run the Rails server
+rails server & npx vite --host
 ```
