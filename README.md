@@ -63,8 +63,11 @@ article.save
 __In your `Gemfile`__
 
 ```sh
-# Add this line
+# Inertia.js Rails adapter
 gem 'inertia_rails'
+
+# Vite support for rails
+gem 'vite_rails'
 ```
 
 __In the terminal__
@@ -72,11 +75,19 @@ __In the terminal__
 ```sh
 # Install new Gem
 bin/bundle install
-```
 
-__In the terminal__
+# Set up your Vite project
+bin/bundle exec vite install
 
-```sh
+# Install Elm dependencies
+npm install -D elm-inertia vite-plugin-elm-watch
+
+# Create a new Elm project in "app/elm"
+npx elm-inertia init
+
+# Add an Elm page to handle the "Articles#index" action
+npx elm-inertia add Articles/Index
+
 # Run the Rails server (in another tab)
 rails server
 ```
