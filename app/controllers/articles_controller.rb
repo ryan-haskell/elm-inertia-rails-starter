@@ -1,5 +1,5 @@
 class ArticlesController < ApplicationController
-  skip_forgery_protection
+  use_inertia_instance_props
 
   def index
     @articles = Article.all

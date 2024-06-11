@@ -60,7 +60,21 @@ article = Article.new(title: "Hello Rails", body: "I am on Rails!")
 article.save
 ```
 
-__In a separate terminal__
+__In your `Gemfile`__
+
+```sh
+# Add this line
+gem 'inertia_rails'
+```
+
+__In the terminal__
+
+```sh
+# Install new Gem
+bin/bundle install
+```
+
+__In the terminal__
 
 ```sh
 # Run the Rails server (in another tab)
