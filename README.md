@@ -28,11 +28,6 @@ npm run dev
 
 If you'd prefer to set things up from scratch, here are all the terminal commands I ran to set up this template:
 
-__Outline__:
-1. [Creating a Rails app](#1-creating-a-new-rails-app)
-
-### 1. Creating a new Rails app
-
 __In the terminal__
 
 ```sh
