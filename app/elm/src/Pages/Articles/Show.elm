@@ -1,4 +1,4 @@
-module Pages.Articles.Index exposing
+module Pages.Articles.Show exposing
     ( Props, decoder
     , Model, init, onPropsChanged
     , Msg, update, subscriptions
@@ -18,9 +18,12 @@ import Browser
 import Effect exposing (Effect)
 import Html exposing (..)
 import Html.Attributes as Attr exposing (..)
+import Html.Events
+import Http
 import Json.Decode
 import Shared
 import Url exposing (Url)
+import Url.Builder
 
 
 
@@ -28,27 +31,31 @@ import Url exposing (Url)
 
 
 type alias Props =
-    { articles : List Article
-    }
-
-
-type alias Article =
-    { id : Int
-    , title : String
+    { article : Article
+    , editUrl : String
     }
 
 
 decoder : Json.Decode.Decoder Props
 decoder =
-    Json.Decode.map Props
-        (Json.Decode.field "articles" (Json.Decode.list articleDecoder))
+    Json.Decode.map2 Props
+        (Json.Decode.field "article" articleDecoder)
+        (Json.Decode.field "editUrl" Json.Decode.string)
+
+
+type alias Article =
+    { id : Int
+    , title : String
+    , body : String
+    }
 
 
 articleDecoder : Json.Decode.Decoder Article
 articleDecoder =
-    Json.Decode.map2 Article
+    Json.Decode.map3 Article
         (Json.Decode.field "id" Json.Decode.int)
         (Json.Decode.field "title" Json.Decode.string)
+        (Json.Decode.field "body" Json.Decode.string)
 
 
 
@@ -76,13 +83,31 @@ onPropsChanged shared url props model =
 
 
 type Msg
-    = NoOp
+    = ClickedDelete
+    | DeletedArticle (Result Http.Error ())
 
 
 update : Shared.Model -> Url -> Props -> Msg -> Model -> ( Model, Effect Msg )
 update shared url props msg model =
     case msg of
-        NoOp ->
+        ClickedDelete ->
+            ( model
+            , Effect.delete
+                { url =
+                    Url.Builder.absolute
+                        [ "articles"
+                        , String.fromInt props.article.id
+                        ]
+                        []
+                , decoder = Json.Decode.succeed ()
+                , onResponse = DeletedArticle
+                }
+            )
+
+        DeletedArticle (Ok ()) ->
+            ( model, Effect.none )
+
+        DeletedArticle (Err httpError) ->
             ( model, Effect.none )
 
 
@@ -96,23 +121,13 @@ subscriptions shared url props model =
 
 
 view : Shared.Model -> Url -> Props -> Model -> Browser.Document Msg
-view shared url props model =
-    { title = "Articles"
+view shared url { article, editUrl } model =
+    { title = "Articles.Show"
     , body =
-        [ h1 [] [ text "Articles" ]
-        , ul [] (List.map viewArticleLink props.articles)
-        , p [] [ a [ href "/articles/new" ] [ text "Create article" ] ]
+        [ p [] [ a [ href "/articles" ] [ text "Back" ] ]
+        , h1 [] [ text article.title ]
+        , p [] [ text article.body ]
+        , p [] [ a [ href editUrl ] [ text "Edit" ] ]
+        , p [] [ button [ Html.Events.onClick ClickedDelete ] [ text "Delete" ] ]
         ]
     }
-
-
-viewArticleLink : Article -> Html Msg
-viewArticleLink article =
-    let
-        url : String
-        url =
-            "/articles/" ++ String.fromInt article.id
-    in
-    li []
-        [ a [ href url ] [ text article.title ]
-        ]

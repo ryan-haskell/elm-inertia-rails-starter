@@ -7,6 +7,7 @@ class ArticlesController < ApplicationController
 
   def show
     @article = Article.find(params[:id])
+    @editUrl = edit_article_path(@article)
   end
 
   def new

@@ -8,7 +8,10 @@ import Effect exposing (Effect)
 import Html
 import Inertia exposing (PageObject)
 import Json.Decode exposing (Value)
+import Pages.Articles.Edit
 import Pages.Articles.Index
+import Pages.Articles.New
+import Pages.Articles.Show
 import Pages.Error404
 import Pages.Error500
 import Shared
@@ -16,13 +19,19 @@ import Url exposing (Url)
 
 
 type Model
-    = Model_Articles_Index { props : Pages.Articles.Index.Props, model : Pages.Articles.Index.Model }
+    = Model_Articles_Edit { props : Pages.Articles.Edit.Props, model : Pages.Articles.Edit.Model }
+    | Model_Articles_Index { props : Pages.Articles.Index.Props, model : Pages.Articles.Index.Model }
+    | Model_Articles_New { props : Pages.Articles.New.Props, model : Pages.Articles.New.Model }
+    | Model_Articles_Show { props : Pages.Articles.Show.Props, model : Pages.Articles.Show.Model }
     | Model_Error404 { model : Pages.Error404.Model }
     | Model_Error500 { info : Pages.Error500.Info, model : Pages.Error500.Model }
 
 
 type Msg
-    = Msg_Articles_Index Pages.Articles.Index.Msg
+    = Msg_Articles_Edit Pages.Articles.Edit.Msg
+    | Msg_Articles_Index Pages.Articles.Index.Msg
+    | Msg_Articles_New Pages.Articles.New.Msg
+    | Msg_Articles_Show Pages.Articles.Show.Msg
     | Msg_Error404 Pages.Error404.Msg
     | Msg_Error500 Pages.Error500.Msg
 
@@ -30,12 +39,36 @@ type Msg
 init : Shared.Model -> Url -> PageObject Value -> ( Model, Effect Msg )
 init shared url pageObject =
     case String.toLower pageObject.component of
+        "articles/edit" ->
+            initForPage shared url pageObject <|
+                { decoder = Pages.Articles.Edit.decoder
+                , init = Pages.Articles.Edit.init
+                , toModel = Model_Articles_Edit
+                , toMsg = Msg_Articles_Edit
+                }
+
         "articles/index" ->
             initForPage shared url pageObject <|
                 { decoder = Pages.Articles.Index.decoder
                 , init = Pages.Articles.Index.init
                 , toModel = Model_Articles_Index
                 , toMsg = Msg_Articles_Index
+                }
+
+        "articles/new" ->
+            initForPage shared url pageObject <|
+                { decoder = Pages.Articles.New.decoder
+                , init = Pages.Articles.New.init
+                , toModel = Model_Articles_New
+                , toMsg = Msg_Articles_New
+                }
+
+        "articles/show" ->
+            initForPage shared url pageObject <|
+                { decoder = Pages.Articles.Show.decoder
+                , init = Pages.Articles.Show.init
+                , toModel = Model_Articles_Show
+                , toMsg = Msg_Articles_Show
                 }
 
         _ ->
@@ -51,6 +84,15 @@ init shared url pageObject =
 update : Shared.Model -> Url -> PageObject Value -> Msg -> Model -> ( Model, Effect Msg )
 update shared url pageObject msg model =
     case ( msg, model ) of
+        ( Msg_Articles_Edit pageMsg, Model_Articles_Edit page ) ->
+            let
+                ( pageModel, pageEffect ) =
+                    Pages.Articles.Edit.update shared url page.props pageMsg page.model
+            in
+            ( Model_Articles_Edit { page | model = pageModel }
+            , Effect.map Msg_Articles_Edit pageEffect
+            )
+
         ( Msg_Articles_Index pageMsg, Model_Articles_Index page ) ->
             let
                 ( pageModel, pageEffect ) =
@@ -58,6 +100,24 @@ update shared url pageObject msg model =
             in
             ( Model_Articles_Index { page | model = pageModel }
             , Effect.map Msg_Articles_Index pageEffect
+            )
+
+        ( Msg_Articles_New pageMsg, Model_Articles_New page ) ->
+            let
+                ( pageModel, pageEffect ) =
+                    Pages.Articles.New.update shared url page.props pageMsg page.model
+            in
+            ( Model_Articles_New { page | model = pageModel }
+            , Effect.map Msg_Articles_New pageEffect
+            )
+
+        ( Msg_Articles_Show pageMsg, Model_Articles_Show page ) ->
+            let
+                ( pageModel, pageEffect ) =
+                    Pages.Articles.Show.update shared url page.props pageMsg page.model
+            in
+            ( Model_Articles_Show { page | model = pageModel }
+            , Effect.map Msg_Articles_Show pageEffect
             )
 
         ( Msg_Error404 pageMsg, Model_Error404 page ) ->
@@ -85,9 +145,21 @@ update shared url pageObject msg model =
 subscriptions : Shared.Model -> Url -> PageObject Value -> Model -> Sub Msg
 subscriptions shared url pageObject model =
     case model of
+        Model_Articles_Edit page ->
+            Pages.Articles.Edit.subscriptions shared url page.props page.model
+                |> Sub.map Msg_Articles_Edit
+
         Model_Articles_Index page ->
             Pages.Articles.Index.subscriptions shared url page.props page.model
                 |> Sub.map Msg_Articles_Index
+
+        Model_Articles_New page ->
+            Pages.Articles.New.subscriptions shared url page.props page.model
+                |> Sub.map Msg_Articles_New
+
+        Model_Articles_Show page ->
+            Pages.Articles.Show.subscriptions shared url page.props page.model
+                |> Sub.map Msg_Articles_Show
 
         Model_Error404 page ->
             Pages.Error404.subscriptions shared url page.model
@@ -101,9 +173,21 @@ subscriptions shared url pageObject model =
 view : Shared.Model -> Url -> PageObject Value -> Model -> Document Msg
 view shared url pageObject model =
     case model of
+        Model_Articles_Edit page ->
+            Pages.Articles.Edit.view shared url page.props page.model
+                |> mapDocument Msg_Articles_Edit
+
         Model_Articles_Index page ->
             Pages.Articles.Index.view shared url page.props page.model
                 |> mapDocument Msg_Articles_Index
+
+        Model_Articles_New page ->
+            Pages.Articles.New.view shared url page.props page.model
+                |> mapDocument Msg_Articles_New
+
+        Model_Articles_Show page ->
+            Pages.Articles.Show.view shared url page.props page.model
+                |> mapDocument Msg_Articles_Show
 
         Model_Error404 page ->
             Pages.Error404.view shared url page.model
@@ -122,12 +206,36 @@ onPropsChanged :
     -> ( Model, Effect Msg )
 onPropsChanged shared url pageObject model =
     case model of
+        Model_Articles_Edit page ->
+            onPropsChangedForPage shared url pageObject page <|
+                { decoder = Pages.Articles.Edit.decoder
+                , onPropsChanged = Pages.Articles.Edit.onPropsChanged
+                , toModel = Model_Articles_Edit
+                , toMsg = Msg_Articles_Edit
+                }
+
         Model_Articles_Index page ->
             onPropsChangedForPage shared url pageObject page <|
                 { decoder = Pages.Articles.Index.decoder
                 , onPropsChanged = Pages.Articles.Index.onPropsChanged
                 , toModel = Model_Articles_Index
                 , toMsg = Msg_Articles_Index
+                }
+
+        Model_Articles_New page ->
+            onPropsChangedForPage shared url pageObject page <|
+                { decoder = Pages.Articles.New.decoder
+                , onPropsChanged = Pages.Articles.New.onPropsChanged
+                , toModel = Model_Articles_New
+                , toMsg = Msg_Articles_New
+                }
+
+        Model_Articles_Show page ->
+            onPropsChangedForPage shared url pageObject page <|
+                { decoder = Pages.Articles.Show.decoder
+                , onPropsChanged = Pages.Articles.Show.onPropsChanged
+                , toModel = Model_Articles_Show
+                , toMsg = Msg_Articles_Show
                 }
 
         Model_Error404 page ->

@@ -1,13 +1,13 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "concurrently -c \"magenta,green\" --names \"RAILS,VITE \" \"npm:dev:rails\" \"npm:dev:vite\"",
+    "dev": "concurrently -c \"red,green\" --names \"rails, vite\" \"npm:dev:rails\" \"npm:dev:vite\"",
     "dev:rails": "bin/rails server",
     "dev:vite": "vite --host"
   },
   "devDependencies": {
     "concurrently": "8.2.2",
-    "elm-inertia": "1.0.3",
+    "elm-inertia": "1.0.4",
     "vite": "5.2.13",
     "vite-plugin-elm-watch": "1.3.4",
     "vite-plugin-full-reload": "^1.1.0",
