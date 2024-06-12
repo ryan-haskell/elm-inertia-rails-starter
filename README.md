@@ -16,18 +16,17 @@ Name | How to check
 ### Running the web server
 
 ```sh
-# Runs a server at http://localhost:3000
-bin/rails server
+# Install ruby and node dependencies
+bin/bundle install
+npm install
+
+# Runs the Rails server at http://localhost:3000
+npm run dev
 ```
 
 ## Manual setup steps
 
 If you'd prefer to set things up from scratch, here are all the terminal commands I ran to set up this template:
-
-__Outline__:
-1. [Creating a Rails app](#1-creating-a-new-rails-app)
-
-### 1. Creating a new Rails app
 
 __In the terminal__
 
