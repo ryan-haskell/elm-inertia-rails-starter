@@ -16,8 +16,12 @@ Name | How to check
 ### Running the web server
 
 ```sh
-# Runs a server at http://localhost:3000
-bin/rails server
+# Install ruby and node dependencies
+bin/bundle install
+npm install
+
+# Runs the Rails server at http://localhost:3000
+npm run dev
 ```
 
 ## Manual setup steps
